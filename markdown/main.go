@@ -14,7 +14,7 @@ import (
 
 const (
 	TEMPLATE_PATH = "utils/render_templates"
-	FORMS_HTML    = "forms.html"
+	FORMS_HTML    = "utils/render_templates/forms.html"
 )
 
 func check(e error) {
@@ -77,7 +77,7 @@ func generateMD(contentID string) (filename string) {
 func conf2md(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method) //get request method
 	if r.Method == "GET" {
-		t, err := template.ParseFiles(TEMPLATE_PATH + "/" + FORMS_HTML)
+		t, err := template.ParseFiles(FORMS_HTML)
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return
@@ -88,7 +88,7 @@ func conf2md(w http.ResponseWriter, r *http.Request) {
 		pageData.FileName = generateMD(r.FormValue("email"))
 		pageData.Success = true
 
-		t, err := template.ParseFiles(TEMPLATE_PATH + "/" + FORMS_HTML)
+		t, err := template.ParseFiles(FORMS_HTML)
 		if err != nil {
 			http.Error(w, "Failed to load template", http.StatusInternalServerError)
 			return

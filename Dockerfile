@@ -1,9 +1,10 @@
 # Use the official Go image as the base image
 FROM golang:latest
-WORKDIR /markdown
-COPY . .
-RUN go mod download && go build
+ENV GO111MODULE=on
+WORKDIR app
+COPY --chown=0:0 . .
+WORKDIR markdown
+RUN go build -o conf2md ./main.go
+RUN chmod +x conf2md
 EXPOSE 8080
-
-# Command to run the Go application when the container starts
-CMD ["./markdown"]  
+CMD ["./conf2md"]  

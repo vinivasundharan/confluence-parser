@@ -10,6 +10,7 @@ import (
 	"markdown/markdown/utils/regex"
 	"net/http"
 	"os"
+	"strings"
 )
 
 const (
@@ -58,7 +59,6 @@ func main() {
 }
 
 func generateMD(contentID string) (filename string) {
-	fmt.Println("in generateMD")
 	os.Remove("response.md")
 	var confContent confluence.Content
 	confContent.ID = contentID
@@ -85,7 +85,8 @@ func conf2md(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 	} else if r.Method == "POST" {
 		pageData := PageData{}
-		pageData.FileName = generateMD(r.FormValue("email"))
+		confluencePageID := strings.TrimSpace(r.FormValue("conf_page_id"))
+		pageData.FileName = generateMD(confluencePageID)
 		pageData.Success = true
 
 		t, err := template.ParseFiles(FORMS_HTML)

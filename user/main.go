@@ -23,7 +23,7 @@ func check(e error) {
 
 func teacher(w http.ResponseWriter, r *http.Request) {
 
-	page, err := ioutil.ReadFile("forms.html")
+	page, err := ioutil.ReadFile("render_templates/forms.html")
 
 	//fmt.Println("teacher page req")
 
@@ -70,14 +70,14 @@ type PageData struct {
 func conf2md(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method) //get request method
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("forms.html")
+		t, _ := template.ParseFiles("render_templates/forms.html")
 		t.Execute(w, nil)
 	} else if r.Method == "POST" {
 		pageData := PageData{}
 		pageData.FileName = generateMD(r.FormValue("email"))
 		pageData.Success = true
 
-		t, _ := template.ParseFiles("forms.html")
+		t, _ := template.ParseFiles("render_templates/forms.html")
 		t.Execute(w, pageData)
 		// Form submission
 		//generateMD(r.FormValue("email"))

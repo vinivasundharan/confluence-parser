@@ -13,33 +13,9 @@ import (
 )
 
 func check(e error) {
-
 	if e != nil {
-
 		panic(e)
-
 	}
-}
-
-func teacher(w http.ResponseWriter, r *http.Request) {
-
-	page, err := ioutil.ReadFile("render_templates/forms.html")
-
-	//fmt.Println("teacher page req")
-
-	check(err)
-
-	fmt.Fprintf(w, "%s", page)
-
-}
-func submit(w http.ResponseWriter, r *http.Request) {
-
-	r.ParseForm()
-
-	//fmt.Println(r.Form)
-
-	fmt.Println(r.FormValue("first_name"))
-
 }
 
 func download(w http.ResponseWriter, r *http.Request) {
@@ -70,41 +46,29 @@ type PageData struct {
 func conf2md(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method) //get request method
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("render_templates/forms.html")
+		t, err := template.ParseFiles("render_templates/forms.html")
+		if err != nil {
+			http.Error(w, "Failed to load template", http.StatusInternalServerError)
+			return
+		}
 		t.Execute(w, nil)
 	} else if r.Method == "POST" {
 		pageData := PageData{}
 		pageData.FileName = generateMD(r.FormValue("email"))
 		pageData.Success = true
 
-		t, _ := template.ParseFiles("render_templates/forms.html")
+		t, err := template.ParseFiles("render_templates/forms.html")
+		if err != nil {
+			http.Error(w, "Failed to load template", http.StatusInternalServerError)
+			return
+		}
 		t.Execute(w, pageData)
-		// Form submission
-		//generateMD(r.FormValue("email"))
-		//http.Redirect(w, r, "/conf2md?Success=true", http.StatusSeeOther)
 	} else if r.Method == "HEAD" || r.Method == "GET" {
 		// Download request
 		fmt.Print(r.Method)
 		download(w, r)
 	}
-	/* else {
-		fileName := generateMD(r.FormValue("confluence"))
-		// Set headers for the file download.
-		w.Header().Set("Content-Disposition", "attachment; filename="+fileName)
-		w.Header().Set("Content-Type", "application/octet-stream")
-		// Open and read the file content.
-		fileContent, err := ioutil.ReadFile(fileName)
-		if err != nil {
-			http.Error(w, "Failed to read the file", http.StatusInternalServerError)
-			return
-		}
-		// Write the file content to the HTTP response.
-		_, err = w.Write(fileContent)
-		if err != nil {
-			http.Error(w, "Failed to write the file content to the response", http.StatusInternalServerError)
-			return
-		}
-	}*/
+
 }
 func main() {
 	os.Remove("response.md")

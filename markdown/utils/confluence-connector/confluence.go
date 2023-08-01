@@ -14,7 +14,7 @@ import (
 type confAuthentication struct {
 	UserName string `env:"CONFLUENCE_USERNAME" envDefault:"vinivasundharan2011@gmail.com"`
 	URL      string `env:"CONFLUENCE_URL" envDefault:"https://vinivasundharan.atlassian.net"`
-	Password string `env:"CONFLUENCE_PASSWORD" envDefault:"ATATT3xFfGF0NPVT32-8i0-dONLMQTaqSCH-Lr7gC6Ew04iwzfdbC-MIB4cATjeGeCxGKm1_5KpsRwGU6ccVb4QiVthhLa4Gn7J55ht9ekInk1LJm0mogigIigVN-9tQrPg_t0RB6tU6gI9lKdISKXe1TMF5eNzTxt1QVv_gRDwgb6CFqvEj8N0=E60B440A"`
+	Password string `env:"CONFLUENCE_PASSWORD" envDefault:"redacted"`
 }
 
 const (

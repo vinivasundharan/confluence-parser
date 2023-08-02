@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"markdown/markdown/utils/confluence-connector"
 	custom_md "markdown/markdown/utils/custom-md-plugins"
 	"markdown/markdown/utils/regex"
@@ -49,13 +50,21 @@ type PageData struct {
 	FileName string
 }
 
-func main() {
+func main_old() {
 	os.Remove("response.md")
 	//var confContent confluence.Content
 	http.HandleFunc("/conf2md", conf2md)
 	http.HandleFunc("/download", download)
 	http.ListenAndServe(":8080", nil)
 	//var content Content 65883
+}
+
+func main() {
+	fmt.Println("hello")
+	contentid := confluence.GetContentIDFromURL("https://vinivasundharan.atlassian.net/wiki/spaces/~557058d417322e392c498a8b1974357b2ed794/pages/65883")
+	spaceid := confluence.GetSpaceIDFromURL("https://vinivasundharan.atlassian.net/wiki/spaces/~557058d417322e392c498a8b1974357b2ed794/pages/65883")
+	fmt.Println(contentid)
+	fmt.Println(spaceid)
 }
 
 func generateMD(contentID string) (filename string) {
@@ -67,7 +76,11 @@ func generateMD(contentID string) (filename string) {
 	title := "# " + confContent.Title + "\n"
 	formatted_html := regex.Regex(confContent.Body.Storage.Value)
 	markdown := custom_md.Format(formatted_html)
-	f, _ := os.OpenFile("response.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("response.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Unable to create or open the file, the function exited with error %e", err)
+		panic(err)
+	}
 	f.WriteString(title)
 	f.WriteString(markdown)
 	return "response.md"

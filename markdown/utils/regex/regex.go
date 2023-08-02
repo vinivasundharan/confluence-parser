@@ -1,6 +1,9 @@
 package regex
 
-import "regexp"
+import (
+	"log"
+	"regexp"
+)
 
 const (
 	TOC             = "<ac:structured-macro ac:name=\"toc\"(.*?)/>"
@@ -11,6 +14,7 @@ const (
 	INFOEND_REPLACE = "</info-box>"
 	DATE            = "<time datetime=\"([0-9_-]+)\" />"
 	CONFLINK        = ""
+	CONFURL         = "[https|http://][a-z.]+/wiki/spaces/([a-z0-9~]+)/pages/([0-9]+)"
 )
 
 func Regex(content string) (formatted string) {
@@ -39,4 +43,27 @@ func regexDate(content string) (formatted string) {
 		return reg.ReplaceAllString(content, reg.FindStringSubmatch(content)[1])
 	}
 	return content
+}
+
+func isValidConfURL(URL string) (valid bool) {
+	match, _ := regexp.MatchString(CONFURL, URL)
+	return match
+}
+
+func GetContentID(URL string) (contentID string) {
+	//reg := "[https|http://][a-z.]+/wiki/spaces/([a-z0-9~]+)/pages/([0-9]+)"
+	if isValidConfURL(URL) {
+		return (regexp.MustCompile(CONFURL).FindStringSubmatch(URL)[2])
+	}
+	log.Fatalf("The URL cannot be parsed, please verify the URL is of a specific format. Add format here")
+	panic("")
+}
+
+func GetSpaceID(URL string) (contentID string) {
+	//reg := "[https|http://][a-z.]+/wiki/spaces/([a-z0-9~]+)/pages/([0-9]+)"
+	if isValidConfURL(URL) {
+		return (regexp.MustCompile(CONFURL).FindStringSubmatch(URL)[1])
+	}
+	log.Fatalf("The URL cannot be parsed, please verify the URL is of a specific format. Add format here")
+	panic("")
 }

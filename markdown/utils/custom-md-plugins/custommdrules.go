@@ -45,7 +45,7 @@ func ConfLinkRule() (confLinkRule md.Rule) {
 				md := fmt.Sprintf("[%s](%s/%s)", selec.Nodes[0].LastChild.FirstChild.FirstChild.Data, spaceName, contentName)
 				return &md
 			}
-			return md.String("")
+			return md.String("error")
 		},
 	}
 	return confLinkRule

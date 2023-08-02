@@ -17,5 +17,9 @@ func custom_md() (converter *md.Converter) {
 func Format(content string) (formatted string) {
 	converter := custom_md()
 	formatted, _ = converter.ConvertString(content)
+	// if error != nil {
+	// 	log.Fatalf("unable to parse ennvironment variables: %e", err)
+	// 	panic(err)
+	// }
 	return formatted
 }

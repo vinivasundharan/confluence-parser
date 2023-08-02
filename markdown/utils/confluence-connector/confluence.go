@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	HTTPHelper "markdown/markdown/utils/http"
+	"markdown/markdown/utils/regex"
 	"net/http"
 
 	"github.com/caarlos0/env"
@@ -51,6 +52,24 @@ func confRequest(reqMethod string, reqURL string) (resp *http.Response) {
 }
 
 func ConfPageContent(contentID string) (responseJSON []byte) {
+	httpCodes := HTTPHelper.HTTPCodes{}
+	auth := confAuthentication{}
+	parseerror := env.Parse(&auth)
+	if parseerror != nil {
+		log.Fatalf("unable to parse ennvironment variables: %e", parseerror)
+		panic(parseerror)
+	}
+	var contentURL = auth.URL + "/" + ENDPOINT_API_VERSION + "/" + ENDPOINT_CONTENT + "/" + contentID + "?expand=body.storage"
+	resp := confRequest(httpCodes.GET, contentURL)
+	if resp.StatusCode > 299 {
+		log.Fatalf("\nRequest was not successful. The request returned %s", resp.Status)
+		return
+	}
+	responseJSON, _ = ioutil.ReadAll(resp.Body)
+	return responseJSON
+}
+
+func ConfPagePutContent(contentID string) (responseJSON []byte) {
 	httpCodes := HTTPHelper.HTTPCodes{}
 	auth := confAuthentication{}
 	parseerror := env.Parse(&auth)
@@ -115,4 +134,12 @@ func getSpaceID(content Content) (spaceID int) {
 
 func getContentID(content string) (contentID int) {
 	return 0
+}
+
+func GetContentIDFromURL(confURL string) (contentID string) {
+	return regex.GetContentID(confURL)
+}
+
+func GetSpaceIDFromURL(confURL string) (spaceID string) {
+	return regex.GetSpaceID(confURL)
 }

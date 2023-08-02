@@ -17,6 +17,7 @@ const (
 	CONFURL         = "[https|http://][a-z.]+/wiki/spaces/([a-z0-9~]+)/pages/([0-9]+)"
 )
 
+// This is the public function that can be extended to add more regex checks to the app
 func Regex(content string) (formatted string) {
 	formatted = regexDate(content)
 	formatted = regexInfo(formatted)
@@ -50,19 +51,21 @@ func isValidConfURL(URL string) (valid bool) {
 	return match
 }
 
+// Funtions for confluence
+
 func GetContentID(URL string) (contentID string) {
 	//reg := "[https|http://][a-z.]+/wiki/spaces/([a-z0-9~]+)/pages/([0-9]+)"
 	if isValidConfURL(URL) {
 		return (regexp.MustCompile(CONFURL).FindStringSubmatch(URL)[2])
 	}
 	log.Fatalf("The URL cannot be parsed, please verify the URL is of a specific format. Add format here")
-	panic("")
+	panic("error")
 }
 
-func GetSpaceID(URL string) (contentID string) {
+func GetSpaceID(url string) (contentID string) {
 	//reg := "[https|http://][a-z.]+/wiki/spaces/([a-z0-9~]+)/pages/([0-9]+)"
-	if isValidConfURL(URL) {
-		return (regexp.MustCompile(CONFURL).FindStringSubmatch(URL)[1])
+	if isValidConfURL(url) {
+		return (regexp.MustCompile(CONFURL).FindStringSubmatch(url)[1])
 	}
 	log.Fatalf("The URL cannot be parsed, please verify the URL is of a specific format. Add format here")
 	panic("")

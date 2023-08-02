@@ -9,6 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Extend this package to add new rules to the markdown
 func InfoBoxRule() (infoBoxRule md.Rule) {
 	infoBoxRule = md.Rule{
 
